@@ -17,16 +17,66 @@ include "common/header.php";
             <table class="table">
                 <thead>
                     <tr>
-                        <td>Sr.</td>
-                        <td>Title</td>
-                        <td width="40%">Description</td>
-                        <td>Status</td>
-                        <td>Created At</td>
-                        <td>Action</td>
+                        <th>Sr.</th>
+                        <th>Title</th>
+                        <th width="40%">Description</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
+                <?php
+                $sel = "SELECT * FROM news"; // step 1
+                $exe = mysqli_query($conn, $sel); // step 2
+                // $fetch = mysqli_fetch_assoc($exe);
+                // p($fetch);
+                // SELECT <cols> FROM <table_name>
+                // <cols> - * (All Columns)
+                ?>
                 <tbody>
-
+                    <?php
+                    $sr = 1;
+                    while ($fetch = mysqli_fetch_assoc($exe)) { // step 3
+                    ?>
+                        <tr>
+                            <td>
+                                <?php echo $sr ?>
+                            </td>
+                            <td>
+                                <?php echo $fetch['title'] ?>
+                            </td>
+                            <td width="40%">
+                                <?php echo $fetch['description'] ?>
+                            </td>
+                            <td>
+                                <?php
+                                if ($fetch['status'] == 1) {
+                                ?>
+                                    <button class="btn btn-success">Active</button>
+                                    <!-- Active -->
+                                <?php
+                                } else {
+                                ?>
+                                    <button class="btn btn-warning">Inactive</button>
+                                    <!-- Inactive -->
+                                <?php
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php echo $fetch['created_at'] ?>
+                            </td>
+                            <td>
+                                <i class="text-primary fa fa-pen"></i> 
+                                &nbsp;
+                                &nbsp;
+                                <i class="text-danger fa fa-trash"></i>
+                            </td>
+                        </tr>
+                    <?php
+                        $sr++;
+                    }
+                    ?>
                 </tbody>
             </table>
         </div>
