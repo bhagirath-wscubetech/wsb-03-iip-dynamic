@@ -1,6 +1,22 @@
 <?php
 include "../app/config.php";
 include "../app/helper.php";
+$msg = "";
+if (isset($_GET['id'])) {
+    $newsId = $_GET['id'];
+    $qry = "DELETE FROM news WHERE id = $newsId";
+    try {
+        $flag = mysqli_query($conn, $qry);
+    } catch (Exception $err) {
+        $flag = false;
+    }
+    if ($flag == true) {
+        $msg = "Data deleted successfully";
+    } else {
+        $msg = "Unable to delete the data";
+    }
+}
+
 include "common/header.php";
 ?>
 <!-- Content Wrapper -->
@@ -67,10 +83,13 @@ include "common/header.php";
                                 <?php echo $fetch['created_at'] ?>
                             </td>
                             <td>
-                                <i class="text-primary fa fa-pen"></i> 
+                                <i class="text-primary fa fa-pen"></i>
                                 &nbsp;
                                 &nbsp;
-                                <i class="text-danger fa fa-trash"></i>
+                                <a href="view-news.php?id=<?php echo $fetch['id'] ?>">
+                                    <!-- get request -->
+                                    <i class="text-danger fa fa-trash"></i>
+                                </a>
                             </td>
                         </tr>
                     <?php
@@ -85,3 +104,13 @@ include "common/header.php";
 </div>
 <!-- End of Main Content -->
 <?php include "common/footer.php"; ?>
+<?php
+if ($msg != "") :
+?>
+    <script>
+        showSnackbar("<?php echo $msg ?>", <?php echo $flag ?>)
+    </script>
+<?php
+    $msg = "";
+endif;
+?>
