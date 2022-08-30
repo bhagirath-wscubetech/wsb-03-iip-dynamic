@@ -7,24 +7,23 @@ if (is_null($id)) {
     $mode = "Add";
 } else {
     // page will be used for update
-    $selNews = "SELECT * FROM news WHERE id =$id";
+    $selNews = "SELECT * FROM states WHERE id =$id";
     $exeNews = mysqli_query($conn, $selNews);
     $fetchNews = mysqli_fetch_assoc($exeNews);
-    $title = $fetchNews['title'];
-    $desc = $fetchNews['description'];
+    $name = $fetchNews['name'];
     $mode = "Update";
 }
 $msg = "";
 if (isset($_POST['save'])) {
     // p($_POST);
-    $title = $_POST['news_title'];
-    $desc  = $_POST['news_desc'];
-    if ($title != "" && $desc != "") {
+    $name = $_POST['name'];
+    $countryId = $_POST['country_id'];
+    if ($name != "" && $countryId != 0) {
         // server side validation
         if (is_null($id)) {
-            $qry = "INSERT INTO news SET title = '$title', description = '$desc'";
+            $qry = "INSERT INTO states SET state_name = '$name',country_id = $countryId";
         } else {
-            $qry = "UPDATE news SET title = '$title', description = '$desc' WHERE id=$id";
+            $qry = "UPDATE states SET state_name = '$name',country_id = $countryId WHERE id=$id";
         }
 
         try {
@@ -34,7 +33,7 @@ if (isset($_POST['save'])) {
             // p($err->getMessage());            
         }
         if ($flag == true) {
-            header("LOCATION:view-news.php");
+            header("LOCATION:view-state.php");
         } else {
             $msg = "Unable to insert data, internal server error";
         }
@@ -53,7 +52,7 @@ include "common/header.php";
     <!-- Page Heading -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary"><?php echo $mode ?> News</h6>
+            <h6 class="m-0 font-weight-bold text-primary"><?php echo $mode ?> State</h6>
         </div>
         <div class="card-body">
             <h4 class="text-center text-danger">
@@ -62,12 +61,25 @@ include "common/header.php";
             <form method="post">
                 <div class="row">
                     <div class="col-12">
-                        <label for="" class="form-lable">Title</label>
-                        <input type="text" required name="news_title" class="form-control" value="<?php echo $title ?? '' ?>">
+                        <label for="" class="form-lable">Name</label>
+                        <input type="text" required name="name" class="form-control" value="<?php echo $name ?? '' ?>">
                     </div>
                     <div class="col-12 mt-2">
-                        <label for="" class="form-lable">Description</label>
-                        <textarea name="news_desc" required  class="form-control" cols="30" rows="10"><?php echo $desc ?? '' ?></textarea>
+                        <label for="" class="form-label">Country</label>
+                        <select name="country_id" id="" class="form-control">
+                            <option value="0">Select a country</option>
+                            <?php
+                            $selCountry = "SELECT * FROM countries ORDER BY name ASC";
+                            $exeCountry = mysqli_query($conn, $selCountry);
+                            while ($fetchCountry = mysqli_fetch_assoc($exeCountry)) :
+                            ?>
+                                <option value="<?php echo $fetchCountry['id'] ?>">
+                                    <?php echo $fetchCountry['name'] ?>
+                                </option>
+                            <?php
+                            endwhile;
+                            ?>
+                        </select>
                     </div>
                     <div class="col-12 mt-2">
                         <button class="btn btn-primary" type="submit" name="save" value="clicked">
@@ -85,5 +97,5 @@ include "common/header.php";
 <?php include "common/footer.php"; ?>
 <script src="https://cdn.ckeditor.com/4.19.1/standard/ckeditor.js"></script>
 <script>
-    CKEDITOR.replace( 'news_desc' );
+    CKEDITOR.replace('news_desc');
 </script>

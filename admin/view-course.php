@@ -3,10 +3,10 @@ include "../app/config.php";
 include "../app/helper.php";
 $msg = "";
 if (isset($_GET['id'])) {
-    $newsId = $_GET['id'];
+    $id = $_GET['id'];
     $newstatus = $_GET['newstatus'];
     if (isset($newstatus)) {
-        $qry = "UPDATE news SET status = $newstatus WHERE id = $newsId";
+        $qry = "UPDATE courses SET status = $newstatus WHERE id = $id";
         try {
             $flag = mysqli_query($conn, $qry);
         } catch (Exception $err) {
@@ -18,13 +18,15 @@ if (isset($_GET['id'])) {
             $msg = "Unable to change the status";
         }
     } else {
-        $qry = "DELETE FROM news WHERE id = $newsId";
+        $qry = "DELETE FROM courses WHERE id = $id";
         try {
             $flag = mysqli_query($conn, $qry);
         } catch (Exception $err) {
             $flag = false;
         }
         if ($flag == true) {
+            $imageName = $_GET['img'];
+            unlink("../gallery_img/$imageName");
             $msg = "Data deleted successfully";
         } else {
             $msg = "Unable to delete the data";
@@ -34,6 +36,7 @@ if (isset($_GET['id'])) {
 
 include "common/header.php";
 ?>
+
 <!-- Content Wrapper -->
 
 
@@ -42,22 +45,23 @@ include "common/header.php";
     <!-- Page Heading -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">View News</h6>
+            <h6 class="m-0 font-weight-bold text-primary">View Course</h6>
         </div>
         <div class="card-body">
             <table class="table">
                 <thead>
                     <tr>
                         <th>Sr.</th>
-                        <th>Title</th>
+                        <th>Name</th>
                         <th width="40%">Description</th>
+                        <th>Image</th>
                         <th>Status</th>
                         <th>Created At</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <?php
-                $sel = "SELECT * FROM news ORDER BY id DESC"; // step 1
+                $sel = "SELECT * FROM courses ORDER BY id DESC"; // step 1
                 // ASC - DESC
                 $exe = mysqli_query($conn, $sel); // step 2
                 // $fetch = mysqli_fetch_assoc($exe);
@@ -75,23 +79,26 @@ include "common/header.php";
                                 <?php echo $sr ?>
                             </td>
                             <td>
-                                <?php echo $fetch['title'] ?>
+                                <?php echo $fetch['name'] ?>
                             </td>
                             <td width="40%">
                                 <?php echo $fetch['description'] ?>
                             </td>
                             <td>
+                                <img style="padding:10px;background-color: <?php echo $fetch['color'] ?>" src="../gallery_img/<?php echo $fetch['image'] ?>" alt="">
+                            </td>
+                            <td>
                                 <?php
                                 if ($fetch['status'] == 1) {
                                 ?>
-                                    <a href="view-news.php?id=<?php echo $fetch['id'] ?>&newstatus=0">
+                                    <a href="view-course.php?id=<?php echo $fetch['id'] ?>&newstatus=0">
                                         <button class="btn btn-success">Active</button>
                                     </a>
                                     <!-- Active -->
                                 <?php
                                 } else {
                                 ?>
-                                    <a href="view-news.php?id=<?php echo $fetch['id'] ?>&newstatus=1">
+                                    <a href="view-course.php?id=<?php echo $fetch['id'] ?>&newstatus=1">
                                         <button class="btn btn-warning">Inactive</button>
                                     </a>
                                     <!-- Inactive -->
@@ -103,12 +110,12 @@ include "common/header.php";
                                 <?php echo $fetch['created_at'] ?>
                             </td>
                             <td>
-                                <a href="add-news.php?id=<?php echo $fetch['id'] ?>">
+                                <a href="add-course.php?id=<?php echo $fetch['id'] ?>">
                                     <i class="text-primary fa fa-pen"></i>
                                 </a>
                                 &nbsp;
                                 &nbsp;
-                                <a href="view-news.php?id=<?php echo $fetch['id'] ?>">
+                                <a href="view-course.php?id=<?php echo $fetch['id'] ?>&img=<?php echo $fetch['image'] ?>">
                                     <!-- get request -->
                                     <i class="text-danger fa fa-trash"></i>
                                 </a>

@@ -3,10 +3,10 @@ include "../app/config.php";
 include "../app/helper.php";
 $msg = "";
 if (isset($_GET['id'])) {
-    $newsId = $_GET['id'];
+    $id = $_GET['id'];
     $newstatus = $_GET['newstatus'];
     if (isset($newstatus)) {
-        $qry = "UPDATE news SET status = $newstatus WHERE id = $newsId";
+        $qry = "UPDATE countries SET status = $newstatus WHERE id = $id";
         try {
             $flag = mysqli_query($conn, $qry);
         } catch (Exception $err) {
@@ -18,7 +18,7 @@ if (isset($_GET['id'])) {
             $msg = "Unable to change the status";
         }
     } else {
-        $qry = "DELETE FROM news WHERE id = $newsId";
+        $qry = "DELETE FROM countries WHERE id = $id";
         try {
             $flag = mysqli_query($conn, $qry);
         } catch (Exception $err) {
@@ -49,15 +49,14 @@ include "common/header.php";
                 <thead>
                     <tr>
                         <th>Sr.</th>
-                        <th>Title</th>
-                        <th width="40%">Description</th>
+                        <th>Name</th>
                         <th>Status</th>
                         <th>Created At</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <?php
-                $sel = "SELECT * FROM news ORDER BY id DESC"; // step 1
+                $sel = "SELECT * FROM countries ORDER BY id DESC"; // step 1
                 // ASC - DESC
                 $exe = mysqli_query($conn, $sel); // step 2
                 // $fetch = mysqli_fetch_assoc($exe);
@@ -75,23 +74,20 @@ include "common/header.php";
                                 <?php echo $sr ?>
                             </td>
                             <td>
-                                <?php echo $fetch['title'] ?>
-                            </td>
-                            <td width="40%">
-                                <?php echo $fetch['description'] ?>
+                                <?php echo $fetch['name'] ?>
                             </td>
                             <td>
                                 <?php
                                 if ($fetch['status'] == 1) {
                                 ?>
-                                    <a href="view-news.php?id=<?php echo $fetch['id'] ?>&newstatus=0">
+                                    <a href="view-country.php?id=<?php echo $fetch['id'] ?>&newstatus=0">
                                         <button class="btn btn-success">Active</button>
                                     </a>
                                     <!-- Active -->
                                 <?php
                                 } else {
                                 ?>
-                                    <a href="view-news.php?id=<?php echo $fetch['id'] ?>&newstatus=1">
+                                    <a href="view-country.php?id=<?php echo $fetch['id'] ?>&newstatus=1">
                                         <button class="btn btn-warning">Inactive</button>
                                     </a>
                                     <!-- Inactive -->
@@ -103,12 +99,12 @@ include "common/header.php";
                                 <?php echo $fetch['created_at'] ?>
                             </td>
                             <td>
-                                <a href="add-news.php?id=<?php echo $fetch['id'] ?>">
+                                <a href="add-country.php?id=<?php echo $fetch['id'] ?>">
                                     <i class="text-primary fa fa-pen"></i>
                                 </a>
                                 &nbsp;
                                 &nbsp;
-                                <a href="view-news.php?id=<?php echo $fetch['id'] ?>">
+                                <a href="view-country.php?id=<?php echo $fetch['id'] ?>">
                                     <!-- get request -->
                                     <i class="text-danger fa fa-trash"></i>
                                 </a>

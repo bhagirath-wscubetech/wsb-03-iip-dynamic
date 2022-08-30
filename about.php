@@ -1,4 +1,6 @@
 <?php
+include "app/config.php";
+include "app/helper.php";
 include "common/header.php";
 ?>
 <!-- right part of the middle portion starts here -->
